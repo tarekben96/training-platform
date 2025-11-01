@@ -4,11 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>مؤسسة التدريب — منصة تجريبية</title>
+
+  <!-- ملف CSS منفصل -->
   <link href="css/style.css" rel="stylesheet">
+
+  <!-- Chart.js (مكتبة خارجية) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
   <div class="container">
+    <!-- الشريط الجانبي -->
     <aside id="sidebar" class="sidebar">
       <div class="brand">مؤسسة التدريب — Demo</div>
       <nav class="nav">
@@ -21,8 +26,10 @@
       </nav>
     </aside>
 
+    <!-- المحتوى الرئيسي -->
     <main class="main">
-      <!-- Dashboard -->
+
+      <!-- لوحة القيادة -->
       <section id="dashboard" class="tab">
         <header class="header-row">
           <h1>لوحة القيادة</h1>
@@ -30,10 +37,22 @@
         </header>
 
         <section class="metrics">
-          <div class="card"><div class="metric-label">إجمالي المتدربين</div><div id="metric-students" class="metric-value">0</div></div>
-          <div class="card"><div class="metric-label">الدورات</div><div id="metric-courses" class="metric-value">0</div></div>
-          <div class="card"><div class="metric-label">جلسات مستقبلية</div><div id="metric-sessions" class="metric-value">0</div></div>
-          <div class="card"><div class="metric-label">إجمالي العائد</div><div id="metric-revenue" class="metric-value">0 USD</div></div>
+          <div class="card">
+            <div class="metric-label">إجمالي المتدربين</div>
+            <div id="metric-students" class="metric-value">0</div>
+          </div>
+          <div class="card">
+            <div class="metric-label">الدورات</div>
+            <div id="metric-courses" class="metric-value">0</div>
+          </div>
+          <div class="card">
+            <div class="metric-label">جلسات مستقبلية</div>
+            <div id="metric-sessions" class="metric-value">0</div>
+          </div>
+          <div class="card">
+            <div class="metric-label">إجمالي العائد</div>
+            <div id="metric-revenue" class="metric-value">0 USD</div>
+          </div>
         </section>
 
         <section class="grid">
@@ -41,10 +60,12 @@
             <strong>نمو المتدربين</strong>
             <div class="chart-wrap"><canvas id="chartUsers"></canvas></div>
           </div>
+
           <div class="card">
             <strong>الجلسات بحسب الجهاز</strong>
             <div class="chart-wrap small"><canvas id="chartDevice"></canvas></div>
           </div>
+
           <div class="card">
             <strong>أحدث النشاط</strong>
             <ul id="recent-activity"></ul>
@@ -52,21 +73,40 @@
         </section>
       </section>
 
-      <!-- Courses -->
+      <!-- الدورات -->
       <section id="courses" class="tab" hidden>
-        <header class="header-row"><h2>الدورات</h2><button class="btn-primary" onclick="UI.openCreateCourse()">إنشاء دورة</button></header>
+        <header class="header-row">
+          <h2>الدورات</h2>
+          <button class="btn-primary" onclick="UI.openCreateCourse()">إنشاء دورة</button>
+        </header>
+
         <div id="courses-list" class="courses"></div>
       </section>
 
-      <!-- Classroom -->
+      <!-- الفصل الافتراضي -->
       <section id="classroom" class="tab" hidden>
-        <header class="header-row"><h2>الفصل الافتراضي</h2><button class="btn-primary" onclick="UI.openSchedule()">جدولة جلسة</button></header>
-        <div class="card"><table id="sessions-table"><thead><tr><th>موضوع</th><th>تاريخ/وقت</th><th>دورة</th><th>إجراء</th></tr></thead><tbody></tbody></table></div>
+        <header class="header-row">
+          <h2>الفصل الافتراضي</h2>
+          <button class="btn-primary" onclick="UI.openSchedule()">جدولة جلسة</button>
+        </header>
+
+        <div class="card">
+          <table id="sessions-table">
+            <thead>
+              <tr><th>موضوع</th><th>تاريخ/وقت</th><th>دورة</th><th>إجراء</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </section>
 
-      <!-- Assessments -->
+      <!-- الاختبارات -->
       <section id="assessments" class="tab" hidden>
-        <header class="header-row"><h2>الاختبارات</h2><button class="btn-primary" onclick="UI.openCreateTest()">إنشاء اختبار</button></header>
+        <header class="header-row">
+          <h2>الاختبارات</h2>
+          <button class="btn-primary" onclick="UI.openCreateTest()">إنشاء اختبار</button>
+        </header>
+
         <div id="tests-list"></div>
       </section>
 
@@ -80,10 +120,15 @@
             <input id="crm-name" placeholder="الاسم بالكامل" />
             <input id="crm-email" placeholder="الإيميل" />
           </div>
+
           <div class="row" style="margin-top:8px;">
             <input id="crm-phone" placeholder="الهاتف" />
-            <select id="crm-source"><option value="website">الموقع</option><option value="ads">إعلان</option></select>
+            <select id="crm-source">
+              <option value="website">الموقع</option>
+              <option value="ads">إعلان</option>
+            </select>
           </div>
+
           <div class="form-actions" style="margin-top:10px">
             <button class="btn-ghost" onclick="CRM.exportCSV()">تصدير CSV</button>
             <button class="btn-primary" onclick="CRM.addLead()">إضافة</button>
@@ -93,13 +138,17 @@
         <div class="card">
           <strong>قائمة المتدربين</strong>
           <div class="table-wrapper" style="margin-top:10px">
-            <table><thead><tr><th>الاسم</th><th>إيميل</th><th>هاتف</th><th>مصدر</th><th>إجراءات</th></tr></thead>
-            <tbody id="leads-table"></tbody></table>
+            <table>
+              <thead>
+                <tr><th>الاسم</th><th>إيميل</th><th>هاتف</th><th>مصدر</th><th>إجراءات</th></tr>
+              </thead>
+              <tbody id="leads-table"></tbody>
+            </table>
           </div>
         </div>
       </section>
 
-      <!-- Settings -->
+      <!-- الإعدادات -->
       <section id="settings" class="tab" hidden>
         <header class="header-row"><h2>الإعدادات</h2></header>
         <div class="card">
@@ -110,11 +159,16 @@
           </ul>
         </div>
       </section>
+
     </main>
   </div>
 
-  <div id="modal" class="modal" style="display:none"><div id="modal-content" class="modal-content"></div></div>
+  <!-- مودال عام -->
+  <div id="modal" class="modal" style="display:none">
+    <div id="modal-content" class="modal-content"></div>
+  </div>
 
+  <!-- السكربتات المنفصلة -->
   <script src="js/proctor.js"></script>
   <script src="js/payments.js"></script>
   <script src="js/app.js"></script>
