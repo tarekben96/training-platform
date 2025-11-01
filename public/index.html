@@ -3,122 +3,131 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>مؤسسة التدريب — منصة تجريبية</title>
+  <title>مؤسسة التدريب — منصة تجريبية (كاملة)</title>
 
-  <link href="css/style.css" rel="stylesheet">
+  <!-- Chart.js خارجي -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
   <style>
-    /* إضافات صغيرة خاصة بالقائمة المنسدلة والهامبرغر و overlay */
-    .mobile-toggle{
-      display:none;
-      position:fixed;
-      top:12px;
-      left:12px; /* لأن dir=rtl، زر الهامبرغر على اليسار يفتح الشريط من اليمين */
-      z-index:100;
-      background:transparent;
-      border:0;
-      font-size:22px;
-      padding:8px;
-      border-radius:8px;
-      cursor:pointer;
+    /* ===== CSS كامل (تصميم، استجابة، هامبرغر، قوائم فرعية) ===== */
+    :root{
+      --bg:#f4f6f8; --card:#fff; --accent:#6a5af9; --accent-2:#7b61ff;
+      --muted:#64748b; --radius:12px; --shadow:0 8px 28px rgba(2,6,23,0.07);
     }
-    #sidebar-overlay{
-      display:none;
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.35);
-      z-index:90;
-    }
-
-    /* القوائم الفرعية داخل الشريط الجانبي */
-    .nav .has-submenu > .submenu{
-      display:none;
-      margin-top:6px;
-      padding-right:8px;
-      padding-left:8px;
-    }
-    .nav .has-submenu.open > .submenu{
-      display:block;
-    }
-    .nav .submenu li{
-      list-style:none;
-      padding:8px 6px;
-      border-radius:6px;
-      cursor:pointer;
-      color:#334155;
-      font-weight:700;
-    }
-    .nav .submenu li:hover{
-      background:rgba(106,90,249,0.06);
-      color:#111827;
-    }
-
-    /* اجعل ايقونة السهم صغيرة */
-    .nav .has-submenu > button .caret{
-      font-size:12px;
-      margin-left:8px;
-      opacity:0.7;
-    }
-
-    /* استجابة: إظهار زر الهامبرغر على الشاشات الصغيرة */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; background:var(--bg); color:#0f1724}
+    a{color:inherit}
+    /* Container */
+    .container{max-width:1200px;margin:20px auto;display:flex;gap:18px;border-radius:12px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+    /* Sidebar */
+    .sidebar{width:280px;padding:20px;border-left:1px solid rgba(2,6,23,0.04);display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg,#fff,#fbfdff)}
+    .brand{font-weight:800;font-size:20px;color:#172554;display:flex;justify-content:space-between;align-items:center}
+    .nav{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+    .nav button{background:transparent;border:0;padding:10px 12px;text-align:right;border-radius:10px;cursor:pointer;font-weight:700;color:#334155}
+    .nav button.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 6px 18px rgba(106,90,249,0.12)}
+    /* submenu */
+    .has-submenu > button{display:flex;align-items:center;justify-content:space-between;width:100%}
+    .has-submenu .submenu{display:none;padding-right:6px;padding-left:6px;margin-top:8px}
+    .has-submenu.open .submenu{display:block}
+    .submenu li{list-style:none;padding:8px;border-radius:6px;font-weight:700;color:#334155;cursor:pointer}
+    .submenu li:hover{background:rgba(106,90,249,0.06);color:#111827}
+    /* Main */
+    .main{flex:1;padding:20px;overflow:auto}
+    .header-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .title{font-weight:800;font-size:18px}
+    .subtle{color:var(--muted);font-weight:600}
+    /* Cards and grid */
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+    .card{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:0 6px 18px rgba(3,7,18,0.04);border:1px solid rgba(2,6,23,0.03);display:flex;flex-direction:column;gap:8px}
+    .metric-label{color:var(--muted);font-weight:700}
+    .metric-value{font-weight:800;font-size:18px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+    .wide{grid-column:span 2}
+    /* Charts */
+    .chart-wrap{position:relative;width:100%;height:220px}
+    canvas{position:absolute!important;inset:0;width:100% !important;height:100% !important;display:block}
+    /* Courses */
+    .courses{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .course-card{border-radius:10px;padding:12px;background:linear-gradient(180deg,#fff,#fbfbff);border:1px solid rgba(2,6,23,0.04)}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;padding:10px;border-radius:8px;border:0;cursor:pointer;font-weight:800}
+    .btn-ghost{background:transparent;border:1px solid rgba(2,6,23,0.06);padding:8px;border-radius:8px;cursor:pointer}
+    .row{display:flex;gap:8px}
+    .row>input,.row>select,.row>textarea{flex:1;min-width:0;width:100%;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.06)}
+    .form-actions{display:flex;gap:8px;align-items:center}
+    .table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-top:8px}
+    table{width:100%;border-collapse:collapse}
+    th,td{text-align:right;padding:8px;border-bottom:1px solid rgba(2,6,23,0.04);font-size:14px}
+    .note{font-size:13px;color:#6b7280}
+    /* Modal */
+    #modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.45);z-index:100}
+    #modal-content{width:900px;max-width:96%;background:white;padding:16px;border-radius:12px;box-shadow:0 20px 60px rgba(2,6,23,0.3)}
+    /* Proctor area small */
+    #proctor-area{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    /* Hamburger & overlay */
+    .mobile-toggle{display:none;border:0;background:transparent;font-size:20px;padding:10px;border-radius:8px;cursor:pointer;color:#374151;position:fixed;left:12px;top:10px;z-index:110}
+    #sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(2,6,23,0.35);z-index:90}
+    /* Responsive */
     @media (max-width:1000px){
-      .mobile-toggle{ display:inline-block; }
+      .container{flex-direction:column;height:auto;margin:8px}
+      .sidebar{position:fixed;right:0;top:0;height:100vh;transform:translateX(110%);width:260px;z-index:120;box-shadow:0 20px 50px rgba(2,6,23,0.2)}
+      .sidebar.open{transform:translateX(0)}
+      .main{padding:14px;margin-top:56px;height:calc(100vh - 56px)}
+      .metrics{grid-template-columns:repeat(2,1fr)}
+      .grid{grid-template-columns:1fr}
+      .courses{grid-template-columns:1fr}
+      .row{flex-direction:column;align-items:stretch}
+      .form-actions button{flex:1 1 48%}
+      .mobile-toggle{display:inline-block}
+      table{min-width:600px}
     }
+    /* small utility */
+    .status-pill{padding:6px 10px;border-radius:8px;font-weight:800;display:inline-block}
+    .status-paid{background:#ecfdf5;color:#065f46}
+    .status-pending{background:#fffbeb;color:#92400e}
+    .status-failed{background:#ffebee;color:#7f1d1d}
   </style>
 </head>
 <body>
   <!-- overlay لإغلاق الشريط الجانبي على المحمول -->
   <div id="sidebar-overlay" onclick="closeSidebar()" aria-hidden="true"></div>
 
-  <!-- زر الهامبرغر (للهاتف) -->
+  <!-- زر الهامبرغر (الهاتف) -->
   <button class="mobile-toggle" aria-label="فتح القائمة" onclick="openSidebar()">☰</button>
 
-  <div class="container">
+  <div class="container" role="application" aria-label="نظام المؤسسة">
     <!-- الشريط الجانبي -->
     <aside id="sidebar" class="sidebar" aria-label="القائمة الجانبية">
-      <div class="brand" style="display:flex;justify-content:space-between;align-items:center">
+      <div class="brand">
         <span>مؤسسة التدريب — Demo</span>
-        <!-- زر إغلاق سريع داخل الشريط على الهاتف -->
-        <button style="background:transparent;border:0;font-size:18px;cursor:pointer" onclick="closeSidebar()" aria-label="إغلاق القائمة">✕</button>
+        <button style="background:transparent;border:0;cursor:pointer;font-size:18px" onclick="closeSidebar()" aria-label="إغلاق القائمة">✕</button>
       </div>
 
       <nav class="nav" role="navigation" aria-label="التنقل">
-        <button onclick="onNavClick('dashboard', this)">لوحة القيادة</button>
+        <button id="tab-dashboard" class="active" onclick="onNavClick('dashboard', this)">لوحة القيادة</button>
+        <button id="tab-courses" onclick="onNavClick('courses', this)">الدورات</button>
+        <button id="tab-classroom" onclick="onNavClick('classroom', this)">الفصل المباشر</button>
 
-        <button onclick="onNavClick('courses', this)">الدورات</button>
-
-        <button onclick="onNavClick('classroom', this)">الفصل المباشر</button>
-
-        <!-- مثال على عنصر فيه قائمة فرعية -->
         <div class="has-submenu" id="menu-assess">
-          <button onclick="toggleSubmenu('menu-assess')">
-            الاختبارات
-            <span class="caret">▾</span>
-          </button>
+          <button onclick="toggleSubmenu('menu-assess')">الاختبارات <span class="caret">▾</span></button>
           <ul class="submenu" aria-hidden="true">
             <li onclick="onNavClick('assessments', this)">قائمة الاختبارات</li>
             <li onclick="UI.openCreateTest && UI.openCreateTest()">إنشاء اختبار</li>
-            <li onclick="window.alert('وظيفة إضافية')">استيراد أسئلة</li>
           </ul>
         </div>
 
-        <button onclick="onNavClick('crm', this)">نظام المتدربين (CRM)</button>
+        <button id="tab-crm" onclick="onNavClick('crm', this)">نظام المتدربين (CRM)</button>
 
         <div class="has-submenu" id="menu-settings">
-          <button onclick="toggleSubmenu('menu-settings')">
-            الإعدادات
-            <span class="caret">▾</span>
-          </button>
+          <button onclick="toggleSubmenu('menu-settings')">الإعدادات <span class="caret">▾</span></button>
           <ul class="submenu" aria-hidden="true">
             <li onclick="onNavClick('settings', this)">التكاملات</li>
-            <li onclick="window.alert('إعدادات الحساب')">الحساب</li>
+            <li onclick="alert('حساب/صلاحيات')">الحساب</li>
           </ul>
         </div>
       </nav>
 
       <div style="margin-top:auto">
-        <div class="note" style="font-size:13px;color:#6b7280">نسخة تجريبية — البيانات محفوظة محليًا فقط.</div>
+        <div class="note">نسخة تجريبية — البيانات محفوظة محليًا فقط.</div>
       </div>
     </aside>
 
@@ -126,128 +135,690 @@
     <main class="main">
       <!-- لوحة القيادة -->
       <section id="dashboard" class="tab">
-        <header class="header-row">
-          <h1>لوحة القيادة</h1>
-          <div id="current-date"></div>
-        </header>
+        <div class="header-row">
+          <div>
+            <div class="title">لوحة القيادة</div>
+            <div class="subtle">نظرة سريعة على الحالة العامة للمؤسسة</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:800;font-size:16px" id="current-date"></div>
+            <div class="subtle">مرحبا — مدير المؤسسة</div>
+          </div>
+        </div>
 
         <section class="metrics">
-          <div class="card">
-            <div class="metric-label">إجمالي المتدربين</div>
-            <div id="metric-students" class="metric-value">0</div>
-          </div>
-          <div class="card">
-            <div class="metric-label">الدورات</div>
-            <div id="metric-courses" class="metric-value">0</div>
-          </div>
-          <div class="card">
-            <div class="metric-label">جلسات مستقبلية</div>
-            <div id="metric-sessions" class="metric-value">0</div>
-          </div>
-          <div class="card">
-            <div class="metric-label">إجمالي العائد</div>
-            <div id="metric-revenue" class="metric-value">0 USD</div>
-          </div>
+          <div class="card"><div class="metric-label">إجمالي المتدربين</div><div id="metric-students" class="metric-value">0</div></div>
+          <div class="card"><div class="metric-label">الدورات</div><div id="metric-courses" class="metric-value">0</div></div>
+          <div class="card"><div class="metric-label">جلسات مستقبلية</div><div id="metric-sessions" class="metric-value">0</div></div>
+          <div class="card"><div class="metric-label">إجمالي العائد</div><div id="metric-revenue" class="metric-value">0 USD</div></div>
         </section>
 
         <section class="grid">
           <div class="card wide">
-            <strong>نمو المتدربين</strong>
-            <div class="chart-wrap"><canvas id="chartUsers"></canvas></div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <strong>نمو المتدربين</strong><small class="subtle">آخر 6 أشهر</small>
+            </div>
+            <div class="chart-wrap" style="margin-top:8px"><canvas id="chartUsers"></canvas></div>
           </div>
 
           <div class="card">
-            <strong>الجلسات بحسب الجهاز</strong>
-            <div class="chart-wrap small"><canvas id="chartDevice"></canvas></div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <strong>الجلسات بحسب الجهاز</strong><small class="subtle">نسبة</small>
+            </div>
+            <div class="chart-wrap" style="height:200px;margin-top:8px"><canvas id="chartDevice"></canvas></div>
+            <div style="display:flex;justify-content:space-between;margin-top:12px;color:#475569;font-weight:700">
+              <div>دسكتوب <span id="device-desktop">60%</span></div>
+              <div>موبايل <span id="device-mobile">30%</span></div>
+              <div>تابلت <span id="device-tablet">10%</span></div>
+            </div>
           </div>
 
           <div class="card">
-            <strong>أحدث النشاط</strong>
-            <ul id="recent-activity"></ul>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <strong>أحدث النشاط</strong><small class="subtle">آخر 10 سجلات</small>
+            </div>
+            <ul id="recent-activity" style="padding:0;margin-top:8px"></ul>
           </div>
         </section>
       </section>
 
-      <!-- بقية التبويبات (الدورات، الفصل، الاختبارات، CRM، الإعدادات) كما في سابقك -->
-      <!-- ... (نفس المحتوى الذي تملكه) ... -->
+      <!-- الدورات -->
+      <section id="courses" class="tab" hidden>
+        <div class="header-row">
+          <div><div class="title">الدورات</div><div class="subtle">أنشئ الدورات، عرض المحتوى وإدارة التسجيلات</div></div>
+          <div><button class="btn-primary" onclick="UI.openCreateCourse()">إنشاء دورة</button></div>
+        </div>
 
+        <div id="courses-list" class="courses"></div>
+      </section>
+
+      <!-- الفصل -->
+      <section id="classroom" class="tab" hidden>
+        <div class="header-row">
+          <div><div class="title">الفصل الافتراضي</div><div class="subtle">روابط الانضمام، وجدولة الجلسات</div></div>
+          <div><button class="btn-primary" onclick="UI.openScheduleSession()">جدولة جلسة</button></div>
+        </div>
+
+        <div class="card" style="margin-bottom:12px">
+          <strong>جلسات قادمة</strong>
+          <table id="sessions-table"><thead><tr><th>موضوع</th><th>تاريخ/وقت</th><th>دورة</th><th>إجراء</th></tr></thead><tbody></tbody></table>
+        </div>
+      </section>
+
+      <!-- الاختبارات -->
+      <section id="assessments" class="tab" hidden>
+        <div class="header-row">
+          <div><div class="title">الاختبارات</div><div class="subtle">إنشاء واختبار وتصحيح آلي</div></div>
+          <div><button class="btn-primary" onclick="UI.openCreateTest()">إنشاء اختبار</button></div>
+        </div>
+
+        <div id="tests-list"></div>
+      </section>
+
+      <!-- CRM -->
+      <section id="crm" class="tab" hidden>
+        <div class="header-row"><div><div class="title">نظام المتدربين (CRM)</div><div class="subtle">سجلات المتدربين والتصدير</div></div></div>
+
+        <div class="card" style="margin-bottom:12px">
+          <strong>إضافة متدرب / جهة اتصال</strong>
+          <div style="margin-top:8px">
+            <div class="row">
+              <input id="crm-name" placeholder="الاسم الكامل" />
+              <input id="crm-email" placeholder="البريد الإلكتروني" />
+            </div>
+            <div class="row" style="margin-top:8px">
+              <input id="crm-phone" placeholder="الهاتف" />
+              <select id="crm-source"><option value="website">الموقع</option><option value="ads">إعلان</option><option value="referral">إحالة</option></select>
+            </div>
+            <div class="form-actions" style="margin-top:10px">
+              <button class="btn-ghost" onclick="CRM.exportCSV()">تصدير CSV</button>
+              <button class="btn-primary" onclick="CRM.addLead()">إضافة</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <strong>قائمة المتدربين</strong>
+          <div class="table-wrapper" style="margin-top:10px">
+            <table><thead><tr><th>اسم</th><th>إيميل</th><th>هاتف</th><th>مصدر</th><th>إجراءات</th></tr></thead><tbody id="leads-table"></tbody></table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings -->
+      <section id="settings" class="tab" hidden>
+        <div class="header-row"><div><div class="title">الإعدادات</div><div class="subtle">تكاملات و إعدادات</div></div></div>
+        <div class="card">
+          <strong>تكاملات</strong>
+          <ul><li>BaridiMob / ECCP</li><li>Proctoring</li></ul>
+        </div>
+      </section>
     </main>
   </div>
 
-  <!-- مودال -->
-  <div id="modal"><div id="modal-content"></div></div>
+  <!-- مودال عام -->
+  <div id="modal" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(2,6,23,0.45);z-index:140">
+    <div id="modal-content" style="width:900px;max-width:96%;background:white;padding:16px;border-radius:12px;box-shadow:0 20px 60px rgba(2,6,23,0.3)"></div>
+  </div>
 
-  <!-- سكربتات المنطق العامة (تتوقع وجود js/app.js, js/payments.js, js/proctor.js) -->
-  <script src="js/proctor.js"></script>
-  <script src="js/payments.js"></script>
-  <script src="js/app.js"></script>
-
-  <!-- سكربت صغير لإدارة الهامبرغر والقوائم الفرعية -->
+  <!-- ========== JavaScript - كامل (UI, CRM, Payments, Proctor) ========== -->
   <script>
-    // فتح الشريط الجانبي (mobile)
-    function openSidebar(){
-      const sb = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
-      if(sb) sb.classList.add('open');
-      if(overlay) overlay.style.display = 'block';
-      document.body.style.overflow = 'hidden';
-    }
-    // غلق الشريط الجانبي (mobile)
-    function closeSidebar(){
-      const sb = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
-      if(sb) sb.classList.remove('open');
-      if(overlay) overlay.style.display = 'none';
-      document.body.style.overflow = '';
-    }
+  /* =================== واجهة UI + Dashboard + Courses + Sessions =================== */
+  const UI = (function(){
+    const LS_KEYS = {
+      COURSES: 'demo_courses_v1',
+      LEADS: 'demo_leads_v1',
+      SESSIONS: 'demo_sessions_v1',
+      PAYMENTS: 'demo_payments_v1',
+      TESTS: 'demo_tests_v1',
+      ACTIVITY: 'demo_activity_v1'
+    };
 
-    // toggle submenu (by id of wrapper .has-submenu)
-    function toggleSubmenu(id){
-      const el = document.getElementById(id);
-      if(!el) return;
-      const isOpen = el.classList.contains('open');
-      // أغلق كل القوائم الفرعية الأخرى
-      document.querySelectorAll('.nav .has-submenu').forEach(h => {
-        if(h.id !== id) { h.classList.remove('open'); h.querySelector('.submenu')?.setAttribute('aria-hidden','true'); }
-      });
-      if(isOpen){
-        el.classList.remove('open');
-        el.querySelector('.submenu')?.setAttribute('aria-hidden','true');
-      } else {
-        el.classList.add('open');
-        el.querySelector('.submenu')?.setAttribute('aria-hidden','false');
-      }
-    }
+    // helper localStorage
+    function load(key, fallback){ try{ const r = localStorage.getItem(key); return r ? JSON.parse(r) : fallback }catch(e){return fallback;} }
+    function save(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
 
-    // عندما تضغط عنصر القائمة، نريد إظهار التبويب المقابل ثم إغلاق السايدبار على المحمول
-    function onNavClick(tabId, btn){
-      if(window.UI && UI.showTab) UI.showTab(tabId);
-      // ضع تأثير تمييز على الزر
+    // seed sample data if empty
+    (function seed(){
+      if(!load(LS_KEYS.COURSES)) save(LS_KEYS.COURSES, [
+        { id:'c1', title:'أساسيات إدارة المشاريع', price:149, description:'دورة حول إدارة المشاريع.', video:'https://www.w3schools.com/html/mov_bbb.mp4', lessons:['مقدمة','تخطيط','تنفيذ'] },
+        { id:'c2', title:'تصميم واجهات المستخدم', price:199, description:'مبادئ الـ UI/UX', video:'https://www.w3schools.com/html/movie.mp4', lessons:['مبادئ','أدوات'] }
+      ]);
+      if(!load(LS_KEYS.LEADS)) save(LS_KEYS.LEADS, [
+        { id:'l1', name:'أحمد سامي', email:'ahmed@example.com', phone:'+20123456789', source:'website' }
+      ]);
+      if(!load(LS_KEYS.ACTIVITY)) save(LS_KEYS.ACTIVITY, [{ text:'تهيئة النظام التجريبي', time:new Date().toISOString() }]);
+    })();
+
+    // show tab
+    function showTab(id){
+      document.querySelectorAll('.tab').forEach(t=>t.hidden=true);
+      const el = document.getElementById(id); if(el) el.hidden = false;
       document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
-      if(btn && btn.tagName === 'BUTTON') btn.classList.add('active');
-      // اغلاق الشريط الجانبي اذا كان مفتوح (على المحمول)
-      if(window.innerWidth <= 1000) closeSidebar();
+      const btn = document.getElementById('tab-' + id);
+      if(btn) btn.classList.add('active');
+      if(window.innerWidth <= 1000) closeSidebar(); // close sidebar on mobile
+      // Update views
+      if(id === 'dashboard') renderDashboard();
+      if(id === 'courses') renderCourses();
+      if(id === 'classroom') renderSessions();
+      if(id === 'assessments') renderTests();
+      if(id === 'crm') renderLeads();
+      if(id === 'settings') {/* nothing */}
     }
 
-    // إغلاق أي قائمة فرعية عند النقر خارجها
-    document.addEventListener('click', function(e){
-      const insideNav = e.target.closest('.nav');
-      if(!insideNav){
-        document.querySelectorAll('.nav .has-submenu').forEach(h => { h.classList.remove('open'); h.querySelector('.submenu')?.setAttribute('aria-hidden','true'); });
+    /* Dashboard */
+    let usersChart = null, deviceChart = null;
+    function renderDashboard(){
+      const leads = load(LS_KEYS.LEADS, []);
+      const courses = load(LS_KEYS.COURSES, []);
+      const sessions = load(LS_KEYS.SESSIONS, []);
+      const payments = load(LS_KEYS.PAYMENTS, []);
+
+      document.getElementById('metric-students').innerText = leads.length;
+      document.getElementById('metric-courses').innerText = courses.length;
+      document.getElementById('metric-sessions').innerText = sessions.filter(s=> new Date(s.datetime) > new Date()).length;
+      const rev = payments.reduce((s,p)=>s+(p.amount||0),0);
+      document.getElementById('metric-revenue').innerText = rev + ' USD';
+
+      // recent activity
+      const activity = load(LS_KEYS.ACTIVITY, []);
+      const recentEl = document.getElementById('recent-activity'); recentEl.innerHTML = '';
+      activity.slice(-10).reverse().forEach(a=>{
+        const li = document.createElement('li');
+        li.style.listStyle = 'none';
+        li.style.padding = '8px 0';
+        li.style.borderBottom = '1px dashed rgba(2,6,23,0.04)';
+        li.innerHTML = `<div style="display:flex;justify-content:space-between">${a.text} <span style="color:#64748b;font-weight:700">${new Date(a.time).toLocaleString()}</span></div>`;
+        recentEl.appendChild(li);
+      });
+
+      // charts
+      const months = ['مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر'];
+      const users = [120,180,270,350,420, leads.length + 80];
+
+      if(usersChart) usersChart.destroy();
+      const ctxUsers = document.getElementById('chartUsers').getContext('2d');
+      usersChart = new Chart(ctxUsers, {
+        type: 'line',
+        data: { labels: months, datasets: [{ label:'المشتركين', data: users, borderColor: '#6a5af9', backgroundColor:'rgba(106,90,249,0.12)', fill:true, tension:0.35 }]},
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+      });
+
+      const deviceData = [60,30,10];
+      document.getElementById('device-desktop').innerText = deviceData[0] + '%';
+      document.getElementById('device-mobile').innerText = deviceData[1] + '%';
+      document.getElementById('device-tablet').innerText = deviceData[2] + '%';
+
+      if(deviceChart) deviceChart.destroy();
+      const ctxDevice = document.getElementById('chartDevice').getContext('2d');
+      deviceChart = new Chart(ctxDevice, {
+        type:'doughnut',
+        data:{ labels:['دسكتوب','موبايل','تابلت'], datasets:[{ data: deviceData, backgroundColor:['#6a5af9','#8b5cf6','#c084fc'] }] },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+      });
+
+      document.getElementById('current-date').innerText = new Date().toLocaleDateString();
+    }
+
+    /* Courses */
+    function renderCourses(){
+      const list = document.getElementById('courses-list');
+      const courses = load(LS_KEYS.COURSES, []);
+      list.innerHTML = '';
+      courses.forEach(c=>{
+        const div = document.createElement('div');
+        div.className = 'course-card';
+        div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+          <h4 style="margin:0">${c.title}</h4>
+          <div style="font-weight:800;color:#111827">${c.price} USD</div>
+        </div>
+        <div style="color:#64748b;font-size:14px">${c.description}</div>
+        <div style="display:flex;justify-content:flex-start;gap:8px;margin-top:10px">
+          <button class="btn-primary" onclick="UI.openCourse('${c.id}')">عرض الدورة</button>
+          <button class="btn-ghost" onclick="Payments.openEnroll('${c.id}')">اشترك</button>
+        </div>`;
+        list.appendChild(div);
+      });
+      document.getElementById('metric-courses').innerText = courses.length;
+    }
+
+    function openCreateCourse(){
+      openModal(`<div style="display:flex;justify-content:space-between;align-items:center"><strong>إنشاء دورة جديدة</strong><button onclick="UI.closeModal()" class="btn-ghost">إغلاق</button></div>
+        <div style="margin-top:12px">
+          <label>عنوان الدورة</label><input id="new-course-title" placeholder="مثال: دورة جديدة" />
+          <label style="margin-top:8px">السعر (USD)</label><input id="new-course-price" type="number" placeholder="99" />
+          <label style="margin-top:8px">وصف مختصر</label><textarea id="new-course-desc" rows="3"></textarea>
+          <div style="margin-top:12px;display:flex;gap:8px"><button class="btn-primary" onclick="UI.createCourse()">حفظ</button><button class="btn-ghost" onclick="UI.closeModal()">إلغاء</button></div>
+        </div>`);
+    }
+    function createCourse(){
+      const title = document.getElementById('new-course-title').value.trim();
+      const price = parseFloat(document.getElementById('new-course-price').value) || 0;
+      const desc = document.getElementById('new-course-desc').value.trim();
+      if(!title){ alert('المرجو إدخال عنوان'); return; }
+      const courses = load(LS_KEYS.COURSES, []);
+      const id = 'c' + Date.now();
+      courses.push({id, title, price, description:desc, lessons:[], video:''});
+      save(LS_KEYS.COURSES, courses);
+      closeModal(); renderCourses(); addActivity(`تم إنشاء دورة ${title}`);
+    }
+
+    function openCourse(id){
+      const courses = load(LS_KEYS.COURSES, []);
+      const c = courses.find(x=>x.id===id);
+      if(!c) return alert('دورة غير موجودة');
+      openModal(`<div style="display:flex;justify-content:space-between;align-items:center"><div><strong>${c.title}</strong><div class="subtle">${c.description}</div></div><div><button onclick="UI.closeModal()" class="btn-ghost">إغلاق</button></div></div>
+        <div style="margin-top:12px;display:flex;gap:12px;flex-direction:column">
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:320px"><div style="background:#000;border-radius:8px;overflow:hidden"><video controls style="width:100%;height:280px;display:block;background:#000"><source src="${c.video}" type="video/mp4">متصفحك لا يدعم الفيديو.</video></div></div>
+            <div style="width:320px;display:flex;flex-direction:column;gap:8px">
+              <div class="card"><strong>محتوى الدورة</strong><ul style="margin:8px 0;padding:0 6px">${c.lessons.map(l=>`<li style="list-style:none;padding:6px 0;border-bottom:1px dashed rgba(2,6,23,0.04)">${l}</li>`).join('')}</ul>
+                <div style="margin-top:8px;display:flex;gap:8px"><button class="btn-primary" onclick="startCourse('${c.id}')">بدء التعلم</button><button class="btn-ghost" onclick="openAssessmentSample('${c.id}')">أداء اختبار تجريبي</button></div></div>
+              <div class="card"><strong>معلومات</strong><div style="color:#6b7280;margin-top:6px">${c.price} USD — مدة تقديرية: 8 أسابيع</div></div>
+            </div>
+          </div>
+        </div>`);
+    }
+
+    function startCourse(id){ closeModal(); alert('تم فتح المحتوى — في نظام حقيقي سيُتحقق أولًا من حالة التسجيل.'); addActivity(`بدأت دورة ${id}`); }
+
+    /* Sessions (classroom) */
+    function openScheduleSession(){
+      const courses = load(LS_KEYS.COURSES, []);
+      openModal(`<div style="display:flex;justify-content:space-between;align-items:center"><strong>جدولة جلسة</strong><button onclick="UI.closeModal()" class="btn-ghost">إغلاق</button></div>
+        <div style="margin-top:12px">
+          <label>موضوع الجلسة</label><input id="sess-title" placeholder="محاضرة عن..." />
+          <label style="margin-top:8px">اختَر الدورة</label>
+          <select id="sess-course">${courses.map(c=>`<option value="${c.id}">${c.title}</option>`).join('')}</select>
+          <label style="margin-top:8px">التاريخ والوقت</label><input id="sess-datetime" type="datetime-local" />
+          <div style="margin-top:12px;display:flex;gap:8px"><button class="btn-primary" onclick="createSession()">حفظ</button><button class="btn-ghost" onclick="UI.closeModal()">إلغاء</button></div>
+        </div>`);
+    }
+    function createSession(){
+      const title = document.getElementById('sess-title').value.trim();
+      const courseId = document.getElementById('sess-course').value;
+      const datetime = document.getElementById('sess-datetime').value;
+      if(!title || !datetime){ alert('اكمل الحقول'); return; }
+      const sessions = load(LS_KEYS.SESSIONS, []);
+      sessions.push({ id:'s'+Date.now(), title, courseId, datetime, link:`https://meet.example.com/session/${Date.now()}` });
+      save(LS_KEYS.SESSIONS, sessions); addActivity(`تم جدولة جلسة "${title}"`); UI.closeModal(); renderSessions();
+    }
+    function renderSessions(){
+      const sessions = load(LS_KEYS.SESSIONS, []);
+      const tbody = document.querySelector('#sessions-table tbody'); tbody.innerHTML = '';
+      const courses = load(LS_KEYS.COURSES, []);
+      sessions.forEach(s=>{
+        const course = courses.find(c=>c.id===s.courseId);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${s.title}</td><td>${new Date(s.datetime).toLocaleString()}</td><td>${course ? course.title : ''}</td><td><button class="btn-primary" onclick="window.open('${s.link}')">انضم</button></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    /* Tests (simple) */
+    function openCreateTest(){
+      const courses = load(LS_KEYS.COURSES, []);
+      openModal(`<div style="display:flex;justify-content:space-between;align-items:center"><strong>إنشاء اختبار</strong><button onclick="UI.closeModal()" class="btn-ghost">إغلاق</button></div>
+        <div style="margin-top:12px">
+          <label>عنوان الاختبار</label><input id="test-title" placeholder="مثال: اختبار نهائي" />
+          <label style="margin-top:8px">اختر الدورة</label>
+          <select id="test-course">${courses.map(c=>`<option value="${c.id}">${c.title}</option>`).join('')}</select>
+          <label style="margin-top:8px">سؤال (اختيار من متعدد)</label><input id="test-q" placeholder="السؤال هنا" />
+          <label style="margin-top:8px">الخيارات (مفصولة بـ ;) ثم اختر صحيح</label><input id="test-options" placeholder="أختيار أ; أختيار ب; أختيار ج" />
+          <label style="margin-top:8px">الجواب الصحيح (نص)</label><input id="test-answer" />
+          <label style="margin-top:8px"><input type="checkbox" id="test-proctor" /> تفعيل كشف الغش (كاميرا + تسجيل النشاط)</label>
+          <div style="margin-top:12px;display:flex;gap:8px"><button class="btn-primary" onclick="createTest()">حفظ</button><button class="btn-ghost" onclick="UI.closeModal()">إلغاء</button></div>
+        </div>`);
+    }
+
+    function createTest(){
+      const title = document.getElementById('test-title').value.trim();
+      const courseId = document.getElementById('test-course').value;
+      const q = document.getElementById('test-q').value.trim();
+      const opts = document.getElementById('test-options').value.split(';').map(s=>s.trim()).filter(Boolean);
+      const ans = document.getElementById('test-answer').value.trim();
+      const proctor = !!document.getElementById('test-proctor')?.checked;
+      if(!title || !q || opts.length < 2 || !ans){ alert('اكمل الحقول'); return; }
+      const tests = load(LS_KEYS.TESTS, []);
+      tests.push({ id:'t'+Date.now(), title, courseId, question:q, options:opts, answer:ans, proctor });
+      save(LS_KEYS.TESTS, tests); addActivity(`أنشأ اختبار ${title}`); UI.closeModal(); renderTests();
+    }
+
+    function renderTests(){
+      const tests = load(LS_KEYS.TESTS, []);
+      const container = document.getElementById('tests-list'); container.innerHTML = '';
+      if(tests.length === 0) container.innerHTML = '<div class="note">لا توجد اختبارات حتى الآن.</div>';
+      tests.forEach(t=>{
+        const courses = load(LS_KEYS.COURSES, []);
+        const course = courses.find(c=>c.id===t.courseId);
+        const div = document.createElement('div'); div.className = 'card'; div.style.marginTop='8px';
+        div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>${t.title}</strong><div class="subtle">${course ? course.title : ''}${t.proctor ? ' • مراقبة مفعلة' : ''}</div></div>
+          <div style="display:flex;gap:6px">
+            <button class="btn-primary" onclick="takeTest('${t.id}')">أداء الاختبار</button>
+            <button class="btn-ghost" onclick="deleteTest('${t.id}')">حذف</button>
+          </div>
+        </div>`;
+        container.appendChild(div);
+      });
+    }
+    function deleteTest(id){ if(!confirm('حذف الاختبار؟')) return; const tests = load(LS_KEYS.TESTS).filter(t=>t.id!==id); save(LS_KEYS.TESTS, tests); renderTests(); addActivity('حذف اختبار'); }
+
+    /* Take test + proctor integration */
+    async function takeTest(testId){
+      const tests = load(LS_KEYS.TESTS);
+      const t = tests.find(x=>x.id===testId); if(!t) return;
+      // Modal with proctor area
+      openModal(`<div style="display:flex;justify-content:space-between;align-items:center"><strong>أداء: ${t.title}</strong><button onclick="stopAndCloseProctor();UI.closeModal()" class="btn-ghost">إغلاق</button></div>
+        <div style="margin-top:12px">
+          <div style="font-weight:800">${t.question}</div>
+          <div id="proctor-area" style="margin-top:8px"></div>
+          <div id="test-options-area" style="margin-top:8px;display:flex;flex-direction:column;gap:8px"></div>
+          <div style="margin-top:12px"><button class="btn-primary" onclick="submitTest('${t.id}')">تسليم</button></div>
+          <div id="test-result" style="margin-top:10px"></div>
+        </div>`);
+      const area = document.getElementById('test-options-area');
+      t.options.forEach(opt=>{
+        const btn = document.createElement('button'); btn.className='btn-ghost'; btn.innerText = opt;
+        btn.onclick = ()=>{ document.querySelectorAll('#test-options-area .btn-ghost').forEach(b=>b.style.background=''); btn.style.background='#eef2ff'; btn.dataset.selected = opt; };
+        area.appendChild(btn);
+      });
+      // start proctor if required
+      if(t.proctor){
+        try{ await Proctor.start(t.id); } catch(e){ console.warn(e); const pa = document.getElementById('proctor-area'); if(pa) pa.innerHTML = '<div style="color:#991b1b">تعذر تفعيل الكشف (الكاميرا).</div>'; }
       }
+    }
+
+    function submitTest(testId){
+      const tests = load(LS_KEYS.TESTS); const t = tests.find(x=>x.id===testId);
+      const selectedBtn = document.querySelector('#test-options-area .btn-ghost[style*="background"]');
+      const resultArea = document.getElementById('test-result');
+      if(!selectedBtn){ alert('اختر إجابة'); return; }
+      const ans = selectedBtn.innerText;
+      if(ans === t.answer){
+        resultArea.innerHTML = '<div style="color:#065f46;font-weight:800">إجابة صحيحة — تم النجاح!</div>'; addActivity(`نجح في اختبار ${t.title}`);
+      } else {
+        resultArea.innerHTML = '<div style="color:#991b1b;font-weight:800">إجابة خاطئة — لم يتم النجاح.</div>'; addActivity(`راسب في اختبار ${t.title}`);
+      }
+      // stop proctor and upload report if running
+      if(t.proctor){ Proctor.stopAndUpload(); }
+    }
+
+    /* Proctor stop helper for modal close */
+    function stopAndCloseProctor(){ const rep = Proctor.stop(); if(rep){ addActivity(`حفظ تقرير مراقبة (محلي) ${rep.id}`); } }
+
+    /* CRM */
+    function addLead(){
+      const name = document.getElementById('crm-name').value.trim();
+      const email = document.getElementById('crm-email').value.trim();
+      const phone = document.getElementById('crm-phone').value.trim();
+      const source = document.getElementById('crm-source').value;
+      if(!name || !email) return alert('الاسم والإيميل مطلوبان');
+      const leads = load(LS_KEYS.LEADS, []);
+      const id = 'l' + Date.now();
+      leads.push({ id, name, email, phone, source });
+      save(LS_KEYS.LEADS, leads);
+      renderLeads(); addActivity(`إضافة متدرب ${name}`);
+      document.getElementById('crm-name').value=''; document.getElementById('crm-email').value=''; document.getElementById('crm-phone').value='';
+    }
+    function renderLeads(){
+      const leads = load(LS_KEYS.LEADS, []);
+      const tbody = document.getElementById('leads-table'); tbody.innerHTML = '';
+      leads.forEach(l=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${l.name}</td><td>${l.email}</td><td>${l.phone}</td><td>${l.source}</td><td style="white-space:nowrap"><button class="btn-ghost" onclick="UI.deleteLead && UI.deleteLead('${l.id}') || CRM.deleteLead('${l.id}')">حذف</button></td>`;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('metric-students').innerText = leads.length;
+    }
+
+    function deleteLead(id){
+      if(!confirm('حذف المتدرب؟')) return;
+      const leads = load(LS_KEYS.LEADS).filter(l=>l.id!==id);
+      save(LS_KEYS.LEADS, leads);
+      renderLeads(); addActivity('حذف متدرب');
+    }
+
+    function exportLeadsCSV(){
+      const leads = load(LS_KEYS.LEADS);
+      if(leads.length === 0) return alert('لا يوجد بيانات');
+      const header = 'name,email,phone,source\\n';
+      const csv = header + leads.map(l=>`"${(l.name||'').replace(/"/g,'""')}","${l.email}","${l.phone}","${l.source}"`).join('\\n');
+      const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'leads.csv'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    /* Modal helpers */
+    function openModal(html){ const modal = document.getElementById('modal'); document.getElementById('modal-content').innerHTML = html; modal.style.display = 'flex'; }
+    function closeModal(){ const modal = document.getElementById('modal'); modal.style.display = 'none'; }
+
+    function addActivity(text){
+      const a = load(LS_KEYS.ACTIVITY, []);
+      a.push({ text, time: new Date().toISOString() });
+      save(LS_KEYS.ACTIVITY, a);
+      renderDashboard();
+    }
+
+    // expose CRM functions for buttons
+    window.UI = { showTab, renderDashboard, renderCourses, renderSessions, openCreateCourse, createCourse, openCourse, openModal, closeModal, openScheduleSession, renderTests, openCreateTest, createTest, addActivity, renderLeads, deleteLead };
+    window.CRM = { addLead, renderLeads, deleteLead, exportCSV: exportLeadsCSV };
+
+    // init
+    document.addEventListener('DOMContentLoaded', ()=>{
+      showTab('dashboard');
+      renderDashboard();
+      renderCourses();
+      renderSessions();
+      renderTests();
+      renderLeads();
     });
 
-    // دعم مفتاح Escape لإغلاق السايدبار أو المودال
-    document.addEventListener('keydown', function(e){
-      if(e.key === 'Escape'){
-        closeSidebar();
-        const modal = document.getElementById('modal');
-        if(modal) modal.style.display = 'none';
-      }
-    });
+    return { showTab, renderDashboard, renderCourses, renderSessions, openCreateCourse, createCourse, openCourse, openModal, closeModal, addActivity };
+  })();
 
-    // تهيئة: اغلاق overlay افتراضياً
-    document.getElementById('sidebar-overlay').style.display = 'none';
+  /* =================== Payments (cash + ECCP/BaridiMob fallback) =================== */
+  const Payments = (function(){
+    function openEnroll(courseId){
+      const courses = JSON.parse(localStorage.getItem('demo_courses_v1') || '[]');
+      const c = courses.find(x=>x.id===courseId);
+      if(!c) return alert('غير موجود');
+      UI.openModal(`<div style="display:flex;justify-content:space-between;align-items:center"><strong>دفع — ${c.title}</strong><button class="btn-ghost" onclick="UI.closeModal()">إغلاق</button></div>
+        <div style="margin-top:12px">
+          <label>الاسم</label><input id="pay-name" placeholder="الاسم الكامل" />
+          <label style="margin-top:8px">الإيميل</label><input id="pay-email" placeholder="email@example.com" />
+          <label style="margin-top:8px">طريقة الدفع</label>
+          <select id="pay-method"><option value="cash">كاش (عند الحضور)</option><option value="eccp">BaridiMob / ECCP</option></select>
+          <div style="margin-top:12px;display:flex;gap:8px"><button class="btn-primary" onclick="Payments.pay('${c.id}')">ادفع الآن</button></div>
+        </div>`);
+    }
+
+    async function pay(courseId){
+      const name = document.getElementById('pay-name').value.trim();
+      const email = document.getElementById('pay-email').value.trim();
+      const method = document.getElementById('pay-method').value;
+      if(!name||!email) return alert('الاسم والإيميل مطلوبان');
+      const courses = JSON.parse(localStorage.getItem('demo_courses_v1') || '[]');
+      const c = courses.find(x=>x.id===courseId);
+      if(!c) return alert('الدورة غير موجودة');
+
+      if(method === 'cash'){
+        const payments = JSON.parse(localStorage.getItem('demo_payments_v1') || '[]');
+        payments.push({ id:'cash-'+Date.now(), courseId, name, email, amount:c.price, method:'cash', status:'paid', time:new Date().toISOString() });
+        localStorage.setItem('demo_payments_v1', JSON.stringify(payments));
+        const leads = JSON.parse(localStorage.getItem('demo_leads_v1') || '[]');
+        if(!leads.find(l=>l.email === email)) leads.push({ id:'l'+Date.now(), name, email, phone:'', source:'cash' });
+        localStorage.setItem('demo_leads_v1', JSON.stringify(leads));
+        UI.addActivity(`تم التسجيل نقدًا: ${name} - ${c.title}`);
+        UI.closeModal(); UI.renderDashboard(); UI.renderCourses();
+        return;
+      }
+
+      // ECCP flow: call server endpoint /api/baridimob/create-payment
+      try{
+        const resp = await fetch('/api/baridimob/create-payment', {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify({ courseId, name, email, amount: c.price })
+        });
+        const data = await resp.json();
+        if(!resp.ok) throw new Error(data.error || 'خطأ من الخادم');
+        const orderId = data.orderId || ('ORD-'+Date.now());
+        const paymentUrl = data.payment_url || data.paymentUrl || '';
+        const deeplink = data.deeplink || '';
+        UI.openModal(`<div style="display:flex;justify-content:space-between;align-items:center"><strong>أكمل الدفع</strong><button class="btn-ghost" onclick="UI.closeModal()">إغلاق</button></div>
+          <div style="margin-top:10px">رقم الطلب: <b>${orderId}</b>
+          <div style="margin-top:8px">
+          ${deeplink ? `<a class="btn-primary" href="${deeplink}">فتح التطبيق</a>` : `<a class="btn-primary" href="${paymentUrl}" target="_blank">فتح صفحة الدفع</a>`}
+          <button class="btn-ghost" onclick="Payments.poll('${orderId}')">تحقق الآن</button></div>
+          <div id="qr-holder" style="margin-top:8px">${paymentUrl ? `<img src="https://chart.googleapis.com/chart?chs=220x220&cht=qr&chl=${encodeURIComponent(paymentUrl)}">` : ''}</div></div>`);
+        Payments._startPolling(orderId);
+      }catch(e){
+        console.error(e); alert('تعذر الاتصال بالخادم، سيتم إنشاء طلب محاكاة محلي.');
+        const orderId = 'LORD-'+Date.now();
+        const payments = JSON.parse(localStorage.getItem('demo_payments_v1') || '[]');
+        payments.push({ id: orderId, courseId, name, email, amount: c.price, method:'sim', status:'pending', time:new Date().toISOString() });
+        localStorage.setItem('demo_payments_v1', JSON.stringify(payments));
+        UI.addActivity('تم إنشاء طلب محاكاة محلي');
+        UI.closeModal();
+      }
+    }
+
+    let _interval = null;
+    function _startPolling(orderId){ if(_interval) clearInterval(_interval); _interval = setInterval(()=>Payments.poll(orderId, true), 3000); }
+    async function poll(orderId, silent){
+      try{
+        const resp = await fetch(`/api/payments/status?orderId=${encodeURIComponent(orderId)}`);
+        if(!resp.ok){ if(!silent) alert('تعذر الحصول على الحالة'); return; }
+        const j = await resp.json(); const status = j.status || 'unknown';
+        if(status === 'paid'){ if(_interval) clearInterval(_interval); UI.addActivity(`تم تأكيد الدفع للطلب ${orderId}`); UI.closeModal(); UI.renderDashboard(); }
+        else if(status === 'failed'){ if(_interval) clearInterval(_interval); if(!silent) alert('فشل الدفع'); }
+      }catch(e){ if(!silent) console.warn(e); }
+    }
+
+    return { openEnroll, pay, poll, _startPolling };
+  })();
+  window.Payments = Payments;
+
+  /* =================== Proctoring (client-side) =================== */
+  const Proctor = (function(){
+    const STORE_KEY = 'proctor_reports_v1';
+    let state = null;
+    async function start(testId){
+      if(state) stop();
+      state = { id: 'r'+Date.now(), testId, startTime: new Date().toISOString(), events: [], screenshots: [], maxScreenshots: 10, intervalMs: 10000, intervalId: null, stream: null, handlers: [] };
+      log('proctor_start', {});
+      // camera
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({ video:{ width:320, height:240 }, audio:false });
+        state.stream = stream;
+        const video = document.createElement('video'); video.autoplay = true; video.muted = true; video.playsInline = true; video.srcObject = stream; video.style.width='160px'; video.style.height='120px';
+        const pa = document.getElementById('proctor-area'); if(pa) pa.appendChild(video);
+        const canvas = document.createElement('canvas'); canvas.width = 320; canvas.height = 240;
+        state.intervalId = setInterval(()=>{
+          try{
+            const ctx = canvas.getContext('2d'); ctx.drawImage(video,0,0,canvas.width,canvas.height);
+            const img = canvas.toDataURL('image/jpeg', 0.6);
+            state.screenshots.push({ t: new Date().toISOString(), img });
+            if(state.screenshots.length > state.maxScreenshots) state.screenshots.shift();
+            log('screenshot', { count: state.screenshots.length });
+          }catch(e){ console.warn(e); }
+        }, state.intervalMs);
+      }catch(err){
+        log('camera_denied', { message: err.message });
+      }
+      // events
+      const visibilityHandler = ()=> log('visibility', { state: document.visibilityState });
+      const blurHandler = ()=> log('blur', {});
+      const focusHandler = ()=> log('focus', {});
+      const copyHandler = ()=> log('copy', {});
+      const pasteHandler = ()=> log('paste', {});
+      const ctxHandler = ()=> log('contextmenu', {});
+      document.addEventListener('visibilitychange', visibilityHandler);
+      window.addEventListener('blur', blurHandler);
+      window.addEventListener('focus', focusHandler);
+      document.addEventListener('copy', copyHandler);
+      document.addEventListener('paste', pasteHandler);
+      document.addEventListener('contextmenu', ctxHandler);
+      state.handlers = [
+        { el: document, type: 'visibilitychange', fn: visibilityHandler },
+        { el: window, type: 'blur', fn: blurHandler },
+        { el: window, type: 'focus', fn: focusHandler },
+        { el: document, type: 'copy', fn: copyHandler },
+        { el: document, type: 'paste', fn: pasteHandler },
+        { el: document, type: 'contextmenu', fn: ctxHandler }
+      ];
+    }
+
+    function log(type, details){ if(!state) return; state.events.push({ t: new Date().toISOString(), type, details }); }
+
+    async function stopAndUpload(){
+      const rep = stop();
+      if(!rep) return null;
+      try{
+        const r = await fetch('/api/proctor/upload', { method:'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ report: rep }) });
+        if(!r.ok) throw new Error('upload failed');
+        const json = await r.json();
+        UI.addActivity(`تقرير مراقبة مرفوع: ${json.id}`);
+        return json;
+      }catch(e){
+        console.warn('upload failed', e);
+        const store = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); store.push(rep); localStorage.setItem(STORE_KEY, JSON.stringify(store, null, 2));
+        UI.addActivity('تقرير مراقبة محفوظ محلياً');
+        return null;
+      }
+    }
+
+    function stop(){
+      if(!state) return null;
+      state.endTime = new Date().toISOString();
+      state.handlers?.forEach(h => h.el.removeEventListener(h.type, h.fn));
+      if(state.intervalId) clearInterval(state.intervalId);
+      try{ state.stream?.getTracks?.forEach(t => t.stop()); }catch(e){}
+      const final = state;
+      state = null;
+      return final;
+    }
+
+    function listReports(){ return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); }
+    function getReport(id){ return listReports().find(r => r.id === id); }
+
+    return { start, stop, stopAndUpload, listReports, getReport };
+  })();
+  window.Proctor = Proctor;
+
+  /* =================== Sidebar & submenu helpers (hamburger) =================== */
+  function openSidebar(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').style.display = 'block'; document.body.style.overflow = 'hidden'; }
+  function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').style.display = 'none'; document.body.style.overflow = ''; }
+
+  function toggleSubmenu(id){
+    const el = document.getElementById(id);
+    if(!el) return;
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.nav .has-submenu').forEach(h => {
+      if(h.id !== id){ h.classList.remove('open'); h.querySelector('.submenu')?.setAttribute('aria-hidden', 'true'); }
+    });
+    if(isOpen){ el.classList.remove('open'); el.querySelector('.submenu')?.setAttribute('aria-hidden', 'true'); }
+    else { el.classList.add('open'); el.querySelector('.submenu')?.setAttribute('aria-hidden', 'false'); }
+  }
+
+  function onNavClick(tabId, btn){
+    if(window.UI && UI.showTab) UI.showTab(tabId);
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    if(btn && btn.tagName === 'BUTTON') btn.classList.add('active');
+    if(window.innerWidth <= 1000) closeSidebar();
+  }
+
+  // Close submenu when clicking outside
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('.nav')){ document.querySelectorAll('.nav .has-submenu').forEach(h => { h.classList.remove('open'); h.querySelector('.submenu')?.setAttribute('aria-hidden', 'true'); }); }
+  });
+
+  // ESC to close
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeSidebar(); const modal = document.getElementById('modal'); if(modal) modal.style.display = 'none'; }
+  });
   </script>
 </body>
 </html>
