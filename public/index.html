@@ -1,83 +1,14 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>مؤسسة التدريب — المنصة النهائية</title>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-  <style>
-    /* ========== CSS شامل ========== */
-    :root{
-      --bg:#f4f6f8; --card:#fff; --accent:#6a5af9; --accent2:#7b61ff;
-      --muted:#64748b; --radius:12px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;background:var(--bg);color:#0f1724}
-    a{color:inherit}
-    /* container */
-    .container{max-width:1200px;margin:20px auto;display:flex;gap:18px;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 8px 28px rgba(2,6,23,0.07)}
-    /* sidebar */
-    .sidebar{width:280px;padding:20px;border-left:1px solid rgba(2,6,23,0.04);display:flex;flex-direction:column}
-    .brand{font-weight:800;font-size:20px;color:#172554;display:flex;align-items:center;justify-content:space-between}
-    .nav{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-    .nav button{background:transparent;border:0;text-align:right;padding:10px;border-radius:10px;cursor:pointer;font-weight:700;color:#334155}
-    .nav button.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 6px 18px rgba(106,90,249,0.12)}
-    .has-submenu > button{display:flex;align-items:center;justify-content:space-between;width:100%}
-    .submenu{display:none;padding-right:6px;padding-left:6px;margin-top:8px}
-    .has-submenu.open .submenu{display:block}
-    .submenu li{list-style:none;padding:8px;border-radius:6px;font-weight:700;color:#334155;cursor:pointer}
-    /* main */
-    .main{flex:1;padding:20px;overflow:auto}
-    .header-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-    .title{font-weight:800;font-size:18px}
-    .subtle{color:var(--muted)}
-    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
-    .card{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:0 6px 18px rgba(3,7,18,0.04);border:1px solid rgba(2,6,23,0.03);display:flex;flex-direction:column;gap:8px}
-    .metric-label{color:var(--muted);font-weight:700}
-    .metric-value{font-weight:800;font-size:18px}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .wide{grid-column:span 2}
-    .chart-wrap{position:relative;height:220px}
-    canvas{position:absolute!important;inset:0;width:100%!important;height:100%!important;display:block}
-    .courses{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    .course-card{border-radius:10px;padding:12px;background:linear-gradient(180deg,#fff,#fbfbff);border:1px solid rgba(2,6,23,0.04)}
-    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;padding:10px;border-radius:8px;border:0;cursor:pointer;font-weight:800}
-    .btn-ghost{background:transparent;border:1px solid rgba(2,6,23,0.06);padding:8px;border-radius:8px;cursor:pointer}
-    .row{display:flex;gap:8px}
-    .row>input,.row>select,.row>textarea{flex:1;min-width:0;width:100%;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.06)}
-    .form-actions{display:flex;gap:8px;align-items:center}
-    .table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-top:8px}
-    table{width:100%;border-collapse:collapse}
-    th,td{text-align:right;padding:8px;border-bottom:1px solid rgba(2,6,23,0.04);font-size:14px}
-    .note{font-size:13px;color:#6b7280}
-    #modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.45);z-index:140}
-    #modal-content{width:900px;max-width:96%;background:white;padding:16px;border-radius:12px;box-shadow:0 20px 60px rgba(2,6,23,0.3)}
-    #proctor-area{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-    /* mobile */
-    .mobile-toggle{display:none;border:0;background:transparent;font-size:20px;padding:10px;border-radius:8px;cursor:pointer;color:#374151;position:fixed;left:12px;top:10px;z-index:160}
-    #sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(2,6,23,0.35);z-index:150}
-    @media (max-width:1000px){
-      .container{flex-direction:column;height:auto;margin:8px}
-      .sidebar{position:fixed;right:0;top:0;height:100vh;transform:translateX(110%);width:260px;z-index:160;box-shadow:0 20px 50px rgba(2,6,23,0.2)}
-      .sidebar.open{transform:translateX(0)}
-      .main{padding:14px;margin-top:56px;height:calc(100vh - 56px)}
-      .metrics{grid-template-columns:repeat(2,1fr)}
-      .grid{grid-template-columns:1fr}
-      .courses{grid-template-columns:1fr}
-      .row{flex-direction:column;align-items:stretch}
-      .form-actions button{flex:1 1 48%}
-      .mobile-toggle{display:inline-block}
-      table{min-width:600px}
-    }
-    /* status pills */
-    .status-pill{padding:6px 10px;border-radius:8px;font-weight:800;display:inline-block}
-    .status-paid{background:#ecfdf5;color:#065f46}
-    .status-pending{background:#fffbeb;color:#92400e}
-    .status-failed{background:#ffebee;color:#7f1d1d}
-  </style>
+  <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
   <!-- overlay for mobile sidebar -->
@@ -103,7 +34,7 @@
           <button onclick="toggleSubmenu('menu-assess')">الاختبارات <span class="caret">▾</span></button>
           <ul class="submenu" aria-hidden="true">
             <li onclick="onNavClick('assessments', this)">قائمة الاختبارات</li>
-            <li onclick="UI.openCreateTest && UI.openCreateTest()">إنشاء اختبار</li>
+            <li onclick="APP.openCreateTest && APP.openCreateTest()">إنشاء اختبار</li>
           </ul>
         </div>
 
@@ -172,7 +103,7 @@
       <section id="courses" class="tab" hidden>
         <div class="header-row">
           <div><div class="title">الدورات</div><div class="subtle">إنشاء وإدارة الدورات</div></div>
-          <div><button class="btn-primary" onclick="UI.openCreateCourse()">إنشاء دورة</button></div>
+          <div><button class="btn-primary" onclick="APP.openCreateCourse()">إنشاء دورة</button></div>
         </div>
         <div id="courses-list" class="courses"></div>
       </section>
@@ -181,7 +112,7 @@
       <section id="classroom" class="tab" hidden>
         <div class="header-row">
           <div><div class="title">الفصل الافتراضي</div><div class="subtle">روابط الانضمام وجدولة الجلسات</div></div>
-          <div><button class="btn-primary" onclick="UI.openScheduleSession()">جدولة جلسة</button></div>
+          <div><button class="btn-primary" onclick="APP.openScheduleSession()">جدولة جلسة</button></div>
         </div>
         <div class="card" style="margin-bottom:12px">
           <strong>جلسات قادمة</strong>
@@ -193,7 +124,7 @@
       <section id="assessments" class="tab" hidden>
         <div class="header-row">
           <div><div class="title">الاختبارات</div><div class="subtle">إنشاء واختبار ومراقبة</div></div>
-          <div><button class="btn-primary" onclick="UI.openCreateTest()">إنشاء اختبار</button></div>
+          <div><button class="btn-primary" onclick="APP.openCreateTest()">إنشاء اختبار</button></div>
         </div>
         <div id="tests-list"></div>
       </section>
@@ -206,7 +137,7 @@
           <div style="margin-top:8px">
             <div class="row"><input id="crm-name" placeholder="الاسم الكامل" /><input id="crm-email" placeholder="البريد الإلكتروني" /></div>
             <div class="row" style="margin-top:8px"><input id="crm-phone" placeholder="الهاتف" /><select id="crm-source"><option value="website">الموقع</option><option value="ads">إعلان</option><option value="referral">إحالة</option></select></div>
-            <div style="display:flex;gap:8px;margin-top:8px"><button class="btn-primary" onclick="CRM.addLead()">إضافة</button><button class="btn-ghost" onclick="CRM.exportCSV()">تصدير CSV</button></div>
+            <div style="display:flex;gap:8px;margin-top:8px"><button class="btn-primary" onclick="APP.addLead()">إضافة</button><button class="btn-ghost" onclick="APP.exportLeadsCSV()">تصدير CSV</button></div>
           </div>
         </div>
         <div class="card"><strong>قائمة المتدربين</strong>
@@ -225,284 +156,9 @@
   <!-- Modal -->
   <div id="modal"><div id="modal-content"></div></div>
 
-  <!-- ========== JavaScript كامل ========== -->
-  <script>
-  /* ========================= Helpers ========================= */
-  function el(id){ return document.getElementById(id); }
-  function q(sel){ return document.querySelector(sel); }
-  function qAll(sel){ return document.querySelectorAll(sel); }
-
-  /* ========== UI, Data and State (final) ========== */
-  const APP = (function(){
-    const LS = {
-      COURSES: 'demo_courses_v1',
-      LEADS: 'demo_leads_v1',
-      SESSIONS: 'demo_sessions_v1',
-      PAYMENTS: 'demo_payments_v1',
-      TESTS: 'demo_tests_v1',
-      ACTIVITY: 'demo_activity_v1',
-      PROCTOR_LOCAL: 'proctor_reports_v1'
-    };
-
-    function load(k, fallback){ try{ const r = localStorage.getItem(k); return r ? JSON.parse(r) : fallback; }catch(e){ return fallback; } }
-    function save(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
-
-    // seed
-    (function seed(){
-      if(!load(LS.COURSES)) save(LS.COURSES, [
-        { id:'c1', title:'أساسيات إدارة المشاريع', price:149, description:'دورة عملية', lessons:['مقدمة','تخطيط','تنفيذ'], video:'https://www.w3schools.com/html/mov_bbb.mp4' },
-        { id:'c2', title:'تصميم واجهات المستخدم', price:199, description:'UI/UX عملي', lessons:['مبادئ','أدوات'], video:'https://www.w3schools.com/html/movie.mp4' }
-      ]);
-      if(!load(LS.LEADS)) save(LS.LEADS, []);
-      if(!load(LS.ACTIVITY)) save(LS.ACTIVITY, [{ text:'تهيئة المنصة', time:new Date().toISOString() }]);
-    })();
-
-    /* Modal helpers */
-    function openModal(html){ el('modal-content').innerHTML = html; el('modal').style.display = 'flex'; }
-    function closeModal(){ el('modal').style.display = 'none'; }
-
-    /* Activity */
-    function addActivity(text){ const a = load(LS.ACTIVITY, []); a.push({ text, time: new Date().toISOString() }); save(LS.ACTIVITY, a); renderDashboard(); }
-
-    /* Dashboard */
-    let usersChart = null, deviceChart = null;
-    function renderDashboard(){
-      const leads = load(LS.LEADS, []);
-      const courses = load(LS.COURSES, []);
-      const sessions = load(LS.SESSIONS, []);
-      const payments = load(LS.PAYMENTS, []);
-      el('metric-students').innerText = leads.length;
-      el('metric-courses').innerText = courses.length;
-      el('metric-sessions').innerText = sessions.filter(s=> new Date(s.datetime) > new Date()).length;
-      const rev = (payments || []).reduce((s,p)=>s+(p.amount||0), 0);
-      el('metric-revenue').innerText = rev + ' USD';
-
-      const act = load(LS.ACTIVITY, []);
-      const recent = el('recent-activity'); recent.innerHTML = '';
-      act.slice(-10).reverse().forEach(a=>{
-        const li = document.createElement('li'); li.style.listStyle='none'; li.style.padding='8px 0'; li.style.borderBottom='1px dashed rgba(2,6,23,0.04)';
-        li.innerHTML = `<div style="display:flex;justify-content:space-between">${a.text}<span style="color:#64748b;font-weight:700">${new Date(a.time).toLocaleString()}</span></div>`;
-        recent.appendChild(li);
-      });
-
-      // charts
-      const months = ['مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر'];
-      const users = [120,180,270,350,420, leads.length + 80];
-      if(usersChart) usersChart.destroy();
-      usersChart = new Chart(el('chartUsers').getContext('2d'), { type:'line', data:{ labels: months, datasets:[{ data: users, borderColor:'#6a5af9', backgroundColor:'rgba(106,90,249,0.12)', fill:true, tension:0.35 }]}, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } });
-      const deviceData = [60,30,10];
-      el('device-desktop').innerText = deviceData[0] + '%';
-      el('device-mobile').innerText = deviceData[1] + '%';
-      el('device-tablet').innerText = deviceData[2] + '%';
-      if(deviceChart) deviceChart.destroy();
-      deviceChart = new Chart(el('chartDevice').getContext('2d'), { type:'doughnut', data:{ labels:['دسكتوب','موبايل','تابلت'], datasets:[{ data: deviceData, backgroundColor:['#6a5af9','#8b5cf6','#c084fc'] }]}, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } });
-
-      el('current-date').innerText = new Date().toLocaleDateString();
-    }
-
-    /* Courses */
-    function renderCourses(){
-      const list = el('courses-list'); const courses = load(LS.COURSES, []);
-      list.innerHTML = '';
-      courses.forEach(c=>{
-        const div = document.createElement('div'); div.className='course-card';
-        div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><h4 style="margin:0">${c.title}</h4><div style="font-weight:800">${c.price} USD</div></div>
-          <div style="color:#64748b;font-size:14px">${c.description}</div>
-          <div style="display:flex;gap:8px;margin-top:10px">
-            <button class="btn-primary" onclick="APP.openCourse('${c.id}')">عرض</button>
-            <button class="btn-ghost" onclick="Payments.openEnroll('${c.id}')">اشترك</button>
-          </div>`;
-        list.appendChild(div);
-      });
-      el('metric-courses').innerText = courses.length;
-    }
-
-    function openCreateCourse(){
-      openModal(`<div style="display:flex;justify-content:space-between;align-items:center"><strong>إنشاء دورة</strong><button class="btn-ghost" onclick="APP.closeModal()">إغلاق</button></div>
-        <div style="margin-top:12px"><label>العنوان</label><input id="new-course-title" /><label style="margin-top:8px">السعر</label><input id="new-course-price" type="number" /><label style="margin-top:8px">الوصف</label><textarea id="new-course-desc"></textarea><div style="margin-top:12px;display:flex;gap:8px"><button class="btn-primary" onclick="APP.createCourse()">حفظ</button><button class="btn-ghost" onclick="APP.closeModal()">إلغاء</button></div></div>`);
-    }
-    function createCourse(){
-      const title = document.getElementById('new-course-title').value.trim();
-      const price = parseFloat(document.getElementById('new-course-price').value) || 0;
-      const desc = document.getElementById('new-course-desc').value.trim();
-      if(!title) return alert('أدخل عنوان');
-      const courses = load(LS.COURSES, []);
-      const id = 'c' + Date.now(); courses.push({ id, title, price, description: desc, lessons: [], video: '' });
-      save(LS.COURSES, courses); closeModal(); addActivity(`إنشاء دورة ${title}`); renderCourses();
-    }
-
-    function openCourse(id){
-      const courses = load(LS.COURSES, []); const c = courses.find(x=>x.id===id); if(!c) return alert('غير موجود');
-      openModal(`<div style="display:flex;justify-content:space-between;align-items:center"><div><strong>${c.title}</strong><div class="subtle">${c.description}</div></div><div><button class="btn-ghost" onclick="APP.closeModal()">إغلاق</button></div></div>
-        <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap"><div style="flex:1;min-width:300px"><video controls style="width:100%;height:240px"><source src="${c.video}"></video></div><div style="min-width:260px"><div class="card"><strong>محتوى</strong><ul style="margin:8px 0;padding:0 6px">${(c.lessons||[]).map(l=>`<li style="list-style:none;padding:6px 0;border-bottom:1px dashed rgba(2,6,23,0.04)">${l}</li>`).join('')}</ul><div style="margin-top:8px"><button class="btn-primary" onclick="APP.startCourse('${c.id}')">بدء</button></div></div></div></div>`);
-    }
-    function startCourse(id){ closeModal(); addActivity(`بدأ دورة ${id}`); }
-
-    /* Sessions */
-    function openScheduleSession(){ const courses = load(LS.COURSES, []); openModal(`<div style="display:flex;justify-content:space-between;align-items:center"><strong>جدولة جلسة</strong><button class="btn-ghost" onclick="APP.closeModal()">إغلاق</button></div><div style="margin-top:12px"><label>الموضوع</label><input id="sess-title" /><label style="margin-top:8px">الدورة</label><select id="sess-course">${courses.map(c=>`<option value="${c.id}">${c.title}</option>`).join('')}</select><label style="margin-top:8px">التاريخ/الوقت</label><input type="datetime-local" id="sess-datetime" /><div style="margin-top:12px"><button class="btn-primary" onclick="APP.createSession()">حفظ</button></div></div>`); }
-    function createSession(){ const title = document.getElementById('sess-title').value.trim(); const courseId = document.getElementById('sess-course').value; const datetime = document.getElementById('sess-datetime').value; if(!title || !datetime) return alert('اكمل الحقول'); const sessions = load(LS.SESSIONS, []); sessions.push({ id:'s'+Date.now(), title, courseId, datetime, link:`https://meet.example.com/session/${Date.now()}` }); save(LS.SESSIONS, sessions); addActivity(`جدولة جلسة ${title}`); closeModal(); renderSessions(); }
-    function renderSessions(){ const sessions = load(LS.SESSIONS, []); const tbody = document.querySelector('#sessions-table tbody'); tbody.innerHTML=''; const courses = load(LS.COURSES, []); sessions.forEach(s=>{ const course = courses.find(c=>c.id===s.courseId); const tr = document.createElement('tr'); tr.innerHTML = `<td>${s.title}</td><td>${new Date(s.datetime).toLocaleString()}</td><td>${course?course.title:''}</td><td><button class="btn-primary" onclick="window.open('${s.link}')">انضم</button></td>`; tbody.appendChild(tr); }); }
-
-    /* Tests, proctor integrated functions are in global Proctor object lower */
-
-    /* CRM */
-    function addLead(){
-      const name = el('crm-name').value.trim(); const email = el('crm-email').value.trim();
-      const phone = el('crm-phone').value.trim(); const source = el('crm-source').value;
-      if(!name || !email) return alert('الاسم والإيميل مطلوبان');
-      const leads = load(LS.LEADS, []); leads.push({ id:'l'+Date.now(), name, email, phone, source }); save(LS.LEADS, leads); renderLeads(); addActivity(`إضافة متدرب ${name}`); el('crm-name').value=''; el('crm-email').value=''; el('crm-phone').value='';
-    }
-    function renderLeads(){ const leads = load(LS.LEADS, []); const tbody = el('leads-table'); tbody.innerHTML=''; leads.forEach(l=>{ const tr = document.createElement('tr'); tr.innerHTML = `<td>${l.name}</td><td>${l.email}</td><td>${l.phone}</td><td>${l.source}</td><td style="white-space:nowrap"><button class="btn-ghost" onclick="APP.deleteLead('${l.id}')">حذف</button></td>`; tbody.appendChild(tr); }); el('metric-students').innerText = leads.length; }
-    function deleteLead(id){ if(!confirm('حذف المتدرب؟')) return; const leads = load(LS.LEADS).filter(l=>l.id!==id); save(LS.LEADS, leads); renderLeads(); addActivity('حذف متدرب'); }
-    function exportLeadsCSV(){ const leads = load(LS.LEADS); if(!leads.length) return alert('لا يوجد'); const header='name,email,phone,source\\n'; const rows = leads.map(l=>`"${(l.name||'').replace(/"/g,'""')}","${l.email}","${l.phone}","${l.source}"`).join('\\n'); const blob = new Blob([header+rows],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='leads.csv'; a.click(); }
-
-    /* initialization and expose */
-    function init(){ renderDashboard(); renderCourses(); renderSessions(); renderLeads(); }
-    return {
-      openModal, closeModal, createCourse, openCreateCourse, openCourse, startCourse,
-      openScheduleSession, createSession, renderSessions, addActivity, renderDashboard,
-      renderCourses, renderLeads, addLead, deleteLead, createSession, createCourse,
-      init
-    };
-  })();
-
-  /* ========== Payments Module (final) ========== */
-  const Payments = (function(){
-    async function openEnroll(courseId){
-      const courses = JSON.parse(localStorage.getItem('demo_courses_v1')||'[]');
-      const c = courses.find(x=>x.id===courseId);
-      if(!c) return alert('الدورة غير موجودة');
-      APP.openModal(`<div style="display:flex;justify-content:space-between;align-items:center"><strong>دفع — ${c.title}</strong><button class="btn-ghost" onclick="APP.closeModal()">إغلاق</button></div>
-        <div style="margin-top:12px">
-          <label>الاسم</label><input id="pay-name" placeholder="الاسم الكامل" />
-          <label style="margin-top:8px">الإيميل</label><input id="pay-email" placeholder="email@example.com" />
-          <label style="margin-top:8px">طريقة الدفع</label>
-          <select id="pay-method"><option value="cash">كاش</option><option value="eccp">BaridiMob / ECCP</option></select>
-          <div style="margin-top:12px;display:flex;gap:8px"><button class="btn-primary" onclick="Payments.pay('${c.id}')">ادفع الآن</button></div>
-        </div>`);
-    }
-
-    async function pay(courseId){
-      const name = document.getElementById('pay-name').value.trim();
-      const email = document.getElementById('pay-email').value.trim();
-      const method = document.getElementById('pay-method').value;
-      if(!name || !email) return alert('الاسم والإيميل مطلوبان');
-      const courses = JSON.parse(localStorage.getItem('demo_courses_v1')||'[]'); const c = courses.find(x=>x.id===courseId);
-      if(!c) return alert('دورة غير موجودة');
-
-      if(method === 'cash'){
-        const payments = JSON.parse(localStorage.getItem('demo_payments_v1')||'[]'); payments.push({ id:'cash-'+Date.now(), courseId, name, email, amount:c.price, method:'cash', status:'paid', time:new Date().toISOString() }); localStorage.setItem('demo_payments_v1', JSON.stringify(payments));
-        const leads = JSON.parse(localStorage.getItem('demo_leads_v1')||'[]'); if(!leads.find(l=>l.email===email)) leads.push({ id:'l'+Date.now(), name, email, phone:'', source:'cash' }); localStorage.setItem('demo_leads_v1', JSON.stringify(leads));
-        APP.addActivity(`تسجيل نقدي: ${name} — ${c.title}`); APP.closeModal(); APP.renderDashboard(); APP.renderCourses(); return;
-      }
-
-      // ECCP / BaridiMob
-      try{
-        const resp = await fetch('/api/baridimob/create-payment', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ courseId, name, email, amount:c.price }) });
-        const data = await resp.json();
-        if(!resp.ok) throw new Error(data.error || 'خطأ من الخادم');
-        const orderId = data.orderId || ('ORD-' + Date.now());
-        const paymentUrl = data.payment_url || data.paymentUrl || '';
-        const deeplink = data.deeplink || '';
-        APP.openModal(`<div style="display:flex;justify-content:space-between;align-items:center"><strong>أكمل الدفع</strong><button class="btn-ghost" onclick="APP.closeModal()">إغلاق</button></div><div style="margin-top:10px">رقم الطلب: <b>${orderId}</b><div style="margin-top:8px">${deeplink?`<a class="btn-primary" href="${deeplink}">فتح تطبيق الدفع</a>`:`<a class="btn-primary" href="${paymentUrl}" target="_blank">فتح صفحة الدفع</a>`} <button class="btn-ghost" onclick="Payments.poll('${orderId}')">تحقق الآن</button></div><div id="qr-holder" style="margin-top:8px">${paymentUrl?`<img src="https://chart.googleapis.com/chart?chs=220x220&cht=qr&chl=${encodeURIComponent(paymentUrl)}">`:''}</div></div>`);
-        Payments._startPolling(orderId);
-      }catch(e){
-        console.error(e); alert('تعذر الاتصال بالخادم. تم إنشاء طلب محاكاة محلي.');
-        const orderId = 'LORD-' + Date.now(); const payments = JSON.parse(localStorage.getItem('demo_payments_v1')||'[]'); payments.push({ id:orderId, courseId, name, email, amount:c.price, method:'sim', status:'pending', time:new Date().toISOString() }); localStorage.setItem('demo_payments_v1', JSON.stringify(payments));
-        APP.addActivity('طلب دفع محلي (محاكاة)'); APP.closeModal();
-      }
-    }
-
-    let _interval = null;
-    function _startPolling(orderId){ if(_interval) clearInterval(_interval); _interval = setInterval(()=>Payments.poll(orderId, true), 3000); }
-    async function poll(orderId, silent){
-      try{
-        const resp = await fetch(`/api/payments/status?orderId=${encodeURIComponent(orderId)}`);
-        if(!resp.ok){ if(!silent) alert('تعذر الحصول على حالة الدفع'); return; }
-        const json = await resp.json(); const status = json.status || 'unknown';
-        if(status === 'paid'){ if(_interval) clearInterval(_interval); APP.addActivity(`تأكيد الدفع ${orderId}`); APP.closeModal(); APP.renderDashboard(); }
-        else if(status === 'failed'){ if(_interval) clearInterval(_interval); if(!silent) alert('فشل الدفع'); }
-      }catch(e){ if(!silent) console.warn(e); }
-    }
-
-    return { openEnroll, pay, poll, _startPolling };
-  })();
-
-  /* ========== Proctor (client side) ========== */
-  const Proctor = (function(){
-    const STORE = 'proctor_reports_v1';
-    let state = null;
-    async function start(testId){
-      if(state) stop();
-      state = { id:'r'+Date.now(), testId, startTime: new Date().toISOString(), events:[], screenshots:[], max:8, intervalMs:10000, intervalId:null, stream:null, handlers:[] };
-      log('proctor_start', {});
-      try{
-        const stream = await navigator.mediaDevices.getUserMedia({ video:{ width:320, height:240 }, audio:false });
-        state.stream = stream;
-        const video = document.createElement('video'); video.autoplay=true; video.muted=true; video.playsInline=true; video.srcObject = stream; video.style.width='140px'; video.style.height='100px';
-        const area = el('proctor-area'); if(area) area.appendChild(video);
-        const canvas = document.createElement('canvas'); canvas.width=320; canvas.height=240;
-        state.intervalId = setInterval(()=>{
-          try{
-            const ctx = canvas.getContext('2d'); ctx.drawImage(video,0,0,canvas.width,canvas.height);
-            const img = canvas.toDataURL('image/jpeg',0.6);
-            state.screenshots.push({ t:new Date().toISOString(), img });
-            if(state.screenshots.length > state.max) state.screenshots.shift();
-            log('screenshot', { count: state.screenshots.length });
-          }catch(e){ console.warn(e); }
-        }, state.intervalMs);
-      }catch(err){
-        log('camera_denied', { message: err.message });
-      }
-      // register events
-      const visibility = ()=> log('visibility', { state: document.visibilityState });
-      const blur = ()=> log('blur', {});
-      const focus = ()=> log('focus', {});
-      const copy = ()=> log('copy', {});
-      const paste = ()=> log('paste', {});
-      const ctx = ()=> log('contextmenu', {});
-      document.addEventListener('visibilitychange', visibility); window.addEventListener('blur', blur); window.addEventListener('focus', focus);
-      document.addEventListener('copy', copy); document.addEventListener('paste', paste); document.addEventListener('contextmenu', ctx);
-      state.handlers = [ {el:document,type:'visibilitychange',fn:visibility},{el:window,type:'blur',fn:blur},{el:window,type:'focus',fn:focus},{el:document,type:'copy',fn:copy},{el:document,type:'paste',fn:paste},{el:document,type:'contextmenu',fn:ctx} ];
-    }
-
-    function log(type, details){ if(!state) return; state.events.push({ t: new Date().toISOString(), type, details }); }
-    function stop(){
-      if(!state) return null;
-      state.endTime = new Date().toISOString();
-      state.handlers?.forEach(h=>h.el.removeEventListener(h.type, h.fn));
-      if(state.intervalId) clearInterval(state.intervalId);
-      try{ state.stream?.getTracks?.forEach(t=>t.stop()); }catch(e){}
-      const final = state; state = null; return final;
-    }
-
-    async function stopAndUpload(){
-      const rep = stop(); if(!rep) return null;
-      try{
-        const r = await fetch('/api/proctor/upload', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ report: rep }) });
-        if(!r.ok) throw new Error('upload failed');
-        const json = await r.json(); if(json && json.id) APP.addActivity(`تقرير مراقبة مرفوع: ${json.id}`); return json;
-      }catch(e){
-        console.warn('upload failed', e);
-        // fallback local
-        const store = JSON.parse(localStorage.getItem(STORE)||'[]'); store.push(rep); localStorage.setItem(STORE, JSON.stringify(store, null, 2)); APP.addActivity('تقرير مراقبة محفوظ محلياً'); return null;
-      }
-    }
-
-    function listLocal(){ return JSON.parse(localStorage.getItem(STORE)||'[]'); }
-
-    return { start, stop, stopAndUpload, listLocal };
-  })();
-
-  /* ========== Sidebar helpers ========== */
-  function openSidebar(){ el('sidebar').classList.add('open'); el('sidebar-overlay').style.display='block'; document.body.style.overflow='hidden'; }
-  function closeSidebar(){ el('sidebar').classList.remove('open'); el('sidebar-overlay').style.display='none'; document.body.style.overflow=''; }
-  function toggleSubmenu(id){ const elSub = document.getElementById(id); if(!elSub) return; const opened = elSub.classList.contains('open'); document.querySelectorAll('.nav .has-submenu').forEach(h=>{ if(h.id!==id){ h.classList.remove('open'); h.querySelector('.submenu')?.setAttribute('aria-hidden','true'); }}); if(opened){ elSub.classList.remove('open'); elSub.querySelector('.submenu')?.setAttribute('aria-hidden','true'); } else { elSub.classList.add('open'); elSub.querySelector('.submenu')?.setAttribute('aria-hidden','false'); } }
-  function onNavClick(tabId, btn){ if(typeof window.APP !== 'undefined') window.APP.showTab?.call?.(null, tabId); document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')); if(btn && btn.tagName==='BUTTON') btn.classList.add('active'); if(window.innerWidth<=1000) closeSidebar(); }
-
-  /* Initialize app on DOM ready */
-  document.addEventListener('DOMContentLoaded', ()=>{ APP.init(); });
-
-  </script>
+  <!-- Load Proctor first, then app, then payments -->
+  <script src="js/proctor.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/payments.js"></script>
 </body>
 </html>
