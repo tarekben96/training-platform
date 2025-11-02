@@ -8,6 +8,7 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
+  <!-- CSS منفصل -->
   <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
@@ -34,7 +35,7 @@
           <button onclick="toggleSubmenu('menu-assess')">الاختبارات <span class="caret">▾</span></button>
           <ul class="submenu" aria-hidden="true">
             <li onclick="onNavClick('assessments', this)">قائمة الاختبارات</li>
-            <li onclick="APP.openCreateTest && APP.openCreateTest()">إنشاء اختبار</li>
+            <li onclick="if(window.APP && APP.openCreateTest) APP.openCreateTest()">إنشاء اختبار</li>
           </ul>
         </div>
 
@@ -103,7 +104,7 @@
       <section id="courses" class="tab" hidden>
         <div class="header-row">
           <div><div class="title">الدورات</div><div class="subtle">إنشاء وإدارة الدورات</div></div>
-          <div><button class="btn-primary" onclick="APP.openCreateCourse()">إنشاء دورة</button></div>
+          <div><button class="btn-primary" onclick="if(window.APP) APP.openCreateCourse()">إنشاء دورة</button></div>
         </div>
         <div id="courses-list" class="courses"></div>
       </section>
@@ -112,7 +113,7 @@
       <section id="classroom" class="tab" hidden>
         <div class="header-row">
           <div><div class="title">الفصل الافتراضي</div><div class="subtle">روابط الانضمام وجدولة الجلسات</div></div>
-          <div><button class="btn-primary" onclick="APP.openScheduleSession()">جدولة جلسة</button></div>
+          <div><button class="btn-primary" onclick="if(window.APP) APP.openScheduleSession()">جدولة جلسة</button></div>
         </div>
         <div class="card" style="margin-bottom:12px">
           <strong>جلسات قادمة</strong>
@@ -124,7 +125,7 @@
       <section id="assessments" class="tab" hidden>
         <div class="header-row">
           <div><div class="title">الاختبارات</div><div class="subtle">إنشاء واختبار ومراقبة</div></div>
-          <div><button class="btn-primary" onclick="APP.openCreateTest()">إنشاء اختبار</button></div>
+          <div><button class="btn-primary" onclick="if(window.APP) APP.openCreateTest()">إنشاء اختبار</button></div>
         </div>
         <div id="tests-list"></div>
       </section>
@@ -137,7 +138,7 @@
           <div style="margin-top:8px">
             <div class="row"><input id="crm-name" placeholder="الاسم الكامل" /><input id="crm-email" placeholder="البريد الإلكتروني" /></div>
             <div class="row" style="margin-top:8px"><input id="crm-phone" placeholder="الهاتف" /><select id="crm-source"><option value="website">الموقع</option><option value="ads">إعلان</option><option value="referral">إحالة</option></select></div>
-            <div style="display:flex;gap:8px;margin-top:8px"><button class="btn-primary" onclick="APP.addLead()">إضافة</button><button class="btn-ghost" onclick="APP.exportLeadsCSV()">تصدير CSV</button></div>
+            <div style="display:flex;gap:8px;margin-top:8px"><button class="btn-primary" onclick="if(window.APP) APP.addLead()">إضافة</button><button class="btn-ghost" onclick="if(window.APP) APP.exportLeadsCSV()">تصدير CSV</button></div>
           </div>
         </div>
         <div class="card"><strong>قائمة المتدربين</strong>
@@ -156,9 +157,74 @@
   <!-- Modal -->
   <div id="modal"><div id="modal-content"></div></div>
 
-  <!-- Load Proctor first, then app, then payments -->
+  <!-- Load core scripts (assumes files exist in public/js) -->
   <script src="js/proctor.js"></script>
   <script src="js/app.js"></script>
   <script src="js/payments.js"></script>
+
+  <!-- Navigation bridge / fallback (ensures buttons work even if APP or functions missing) -->
+  <script>
+  (function(){
+    // Simple helper to show tab and call APP renderers if available
+    function showTab(tabId){
+      document.querySelectorAll('.tab').forEach(t => t.hidden = true);
+      var tab = document.getElementById(tabId);
+      if(tab) tab.hidden = false;
+
+      document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+      var btn = document.getElementById('tab-' + tabId);
+      if(btn) btn.classList.add('active');
+
+      // If APP exists, call appropriate render functions
+      if(window.APP){
+        try{
+          if(tabId === 'dashboard' && typeof APP.renderDashboard === 'function') APP.renderDashboard();
+          if(tabId === 'courses' && typeof APP.renderCourses === 'function') APP.renderCourses();
+          if(tabId === 'classroom' && typeof APP.renderSessions === 'function') APP.renderSessions();
+          if(tabId === 'assessments' && typeof APP.renderTests === 'function') APP.renderTests();
+          if(tabId === 'crm' && typeof APP.renderLeads === 'function') APP.renderLeads();
+        }catch(e){
+          console.warn('APP renderer error:', e);
+        }
+      }
+
+      // close sidebar on mobile
+      if(window.innerWidth <= 1000 && typeof closeSidebar === 'function') closeSidebar();
+    }
+
+    window.onNavClick = window.onNavClick || function(tabId, btn){
+      showTab(tabId);
+      if(btn && btn.tagName === 'BUTTON'){
+        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+    };
+
+    // mobile sidebar fallback
+    window.openSidebar = window.openSidebar || function(){
+      var sb = document.getElementById('sidebar'); if(sb) sb.classList.add('open');
+      var ov = document.getElementById('sidebar-overlay'); if(ov) ov.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    };
+    window.closeSidebar = window.closeSidebar || function(){
+      var sb = document.getElementById('sidebar'); if(sb) sb.classList.remove('open');
+      var ov = document.getElementById('sidebar-overlay'); if(ov) ov.style.display = 'none';
+      document.body.style.overflow = '';
+    };
+    window.toggleSubmenu = window.toggleSubmenu || function(id){
+      var el = document.getElementById(id); if(!el) return;
+      var open = el.classList.toggle('open');
+      var sub = el.querySelector('.submenu'); if(sub) sub.setAttribute('aria-hidden', !open);
+      // close others
+      document.querySelectorAll('.nav .has-submenu').forEach(h=>{ if(h.id !== id){ h.classList.remove('open'); h.querySelector('.submenu')?.setAttribute('aria-hidden', 'true'); }});
+    };
+
+    // ensure default tab visible on load
+    document.addEventListener('DOMContentLoaded', function(){
+      var visible = document.querySelector('.tab:not([hidden])');
+      if(!visible) showTab('dashboard');
+    });
+  })();
+  </script>
 </body>
 </html>
